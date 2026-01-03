@@ -1,0 +1,20 @@
+[project]
+name = "exp-photo-ai-tutorial"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.128.0",
+    "google-genai>=1.56.0",
+    "pillow>=12.0.0",
+    "python-multipart>=0.0.21",
+    "uvicorn>=0.40.0",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.0.2",
+    "ruff>=0.14.10",
+]
