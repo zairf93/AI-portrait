@@ -97,62 +97,6 @@ async def create_model(files: List[UploadFile] = File(...)):
     return {"model_id": model_id, "image_count": len(saved_paths)}
 
 
-@app.post("/generate_photo_from_model")
-async def generate_photo_from_model(model_id: str = Form(...), style: str = Form(...)):
-    image_paths = db.get_model_entry(model_id)
-    if not image_paths:
-        raise HTTPException(status_code=404, detail="Model not found")
-
-    try:
-        generated_image = invoke_ai.generate_image_from_model(image_paths, style)
-        output_filename = f"{model_id}_{style}_{uuid.uuid4().hex[:8]}.png"
-        output_path = os.path.join(OUTPUT_DIR, output_filename)
-        generated_image.save(output_path)
-        return FileResponse(output_path)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        print(f"Generation failed: {e}")
-        raise HTTPException(
-            status_code=500, detail="Internal Server Error during generation."
-        )
-
-
-@app.post("/generate_photo_from_images")
-async def generate_photo_from_images(
-    style: str = Form(...), files: List[UploadFile] = File(...)
-):
-    if len(files) > 3:
-        raise HTTPException(status_code=400, detail="Maximum 3 images allowed.")
-
-    # Temp save images
-    temp_id = str(uuid.uuid4())
-    temp_dir = os.path.join(IMAGES_DIR, "temp", temp_id)
-    os.makedirs(temp_dir, exist_ok=True)
-
-    saved_paths = []
-    for file in files:
-        file_path = os.path.join(temp_dir, file.filename)
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(file.file, buffer)
-        saved_paths.append(file_path)
-
-    try:
-        generated_image = invoke_ai.generate_image_from_model(saved_paths, style)
-        output_filename = f"temp_{temp_id}_{style}.png"
-        output_path = os.path.join(OUTPUT_DIR, output_filename)
-        generated_image.save(output_path)
-
-        return FileResponse(output_path)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    except Exception as e:
-        print(f"Generation failed: {e}")
-        raise HTTPException(
-            status_code=500, detail="Internal Server Error during generation."
-        )
-
-
 def process_image_generation(job_id: str, image_paths: List[str], style: str):
     """Background task to generate image asynchronously."""
     try:
