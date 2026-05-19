@@ -1,8 +1,43 @@
 "use client";
 
 import { useState } from "react";
-import { api } from "@/lib/api/client";
 import { ServerStatusBadge } from "@/components/ServerStatusBadge";
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
+const api = {
+  createModel: async (files: File[]) => {
+    const formData = new FormData();
+    files.forEach((file) => formData.append("files", file));
+
+    const response = await fetch(`${BACKEND_URL}/create_model`, {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to upload images.");
+    }
+
+    return response.json() as Promise<{ model_id: string }>;
+  },
+
+  generatePhoto: async (modelId: string, style: string) => {
+    const response = await fetch(`${BACKEND_URL}/generate_photo`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({ model_id: modelId, style }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to start generation.");
+    }
+
+    return response.json() as Promise<{ job_id: string }>;
+  },
+};
 
 // Icons
 const UploadIcon = () => (
@@ -138,7 +173,7 @@ export default function Home() {
         <div className="absolute top-1/4 right-1/4 w-[450px] h-[450px] bg-teal-500/25 rounded-full blur-[110px] animate-float" />
       </div>
 
-      <div className="relative z-10 flex-grow flex flex-col items-center justify-center p-6 w-full max-w-2xl mx-auto">
+      <div className="relative z-10 grow flex flex-col items-center justify-center p-6 w-full max-w-2xl mx-auto">
         
         {/* VIEW 1: INPUT FORM */}
         {!generatedImage && (
@@ -146,7 +181,7 @@ export default function Home() {
                 <div className="text-center space-y-3">
                     <div className="flex items-center justify-center gap-3">
                         <LogoIcon />
-                        <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+                        <h1 className="text-4xl font-bold tracking-tight bg-linear-to-b from-white to-white/60 bg-clip-text text-transparent">
                             AI Photo Booth
                         </h1>
                     </div>
