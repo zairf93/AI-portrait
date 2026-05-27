@@ -2,42 +2,7 @@
 
 import { useState } from "react";
 import { ServerStatusBadge } from "@/components/ServerStatusBadge";
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-
-const api = {
-  createModel: async (files: File[]) => {
-    const formData = new FormData();
-    files.forEach((file) => formData.append("files", file));
-
-    const response = await fetch(`${BACKEND_URL}/create_model`, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to upload images.");
-    }
-
-    return response.json() as Promise<{ model_id: string }>;
-  },
-
-  generatePhoto: async (modelId: string, style: string) => {
-    const response = await fetch(`${BACKEND_URL}/generate_photo`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({ model_id: modelId, style }),
-    });
-
-    if (!response.ok) {
-      throw new Error("Failed to start generation.");
-    }
-
-    return response.json() as Promise<{ job_id: string }>;
-  },
-};
+import { api } from "@/lib/api/client";
 
 // Icons
 const UploadIcon = () => (
