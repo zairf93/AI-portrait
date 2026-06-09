@@ -1,0 +1,14 @@
+import os
+DATABASE_URL = os.getenv(
+    "DATABASE_URL", 
+    f"sqlite:///{os.path.join(os.path.dirname(__file__), 'models.db')}"
+)
+
+from .sqlite_repo import SQLiteRepository
+from .sqlalchemy_repo import SQLAlchemyRepository
+
+# Instantiate the object securely
+if DATABASE_URL.startswith("sqlite") and os.getenv("USE_SQLALCHEMY", "false").lower() != "true":
+    db = SQLiteRepository(DATABASE_URL)
+else:
+    db = SQLAlchemyRepository(DATABASE_URL)
