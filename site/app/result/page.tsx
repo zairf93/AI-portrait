@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { api } from "@/lib/api/client";
+import { api } from "@/client";
 import { ServerStatusBadge } from "@/components/ServerStatusBadge";
 
 const DownloadIcon = () => (

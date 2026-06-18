@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ServerStatusBadge } from "@/components/ServerStatusBadge";
-import { api } from "@/lib/api/client";
+import { api } from "@/client";
 
 // Icons
 const UploadIcon = () => (
