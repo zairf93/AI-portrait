@@ -8,7 +8,7 @@ DATABASE_URL = os.getenv(
 )
 
 # Instantiate the object securely
-if DATABASE_URL.startswith("sqlite") and os.getenv("USE_SQLALCHEMY", "false").lower() != "true":
+if DATABASE_URL.startswith("sqlite"):
     db = SQLiteRepository(DATABASE_URL)
 else:
     db = SQLAlchemyRepository(DATABASE_URL)
