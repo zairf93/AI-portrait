@@ -312,11 +312,6 @@ export default function Home() {
 
       <div className="relative z-10 flex flex-col items-center gap-3 pb-4">
         <ServerStatusBadge />
-        <footer className="flex items-center gap-2 text-xs uppercase tracking-widest text-white/60 font-semibold">
-          <span>AI Photo Booth</span>
-          <img src="/pixegami-logo.svg" alt="" className="w-4 h-4" />
-          <span>App by Pixegami</span>
-        </footer>
       </div>
     </div>
   );
