@@ -47,7 +47,7 @@ export function ServerStatusBadge() {
     },
     connected: {
       color: "bg-green-500",
-      text: apiUrl,
+      text: "Server Online",
     },
     error: {
       color: "bg-red-500",
